@@ -8,43 +8,43 @@ This program is designed to synchronize two folders: a source folder and a repli
 
 The ``async_synchronize_folders`` function is responsible for synchronizing the contents of two folders: the ``source folder`` and the ``replica folder``. This process is performed asynchronously to improve efficiency, utilizing the asyncio library in Python. The algorithm follows these key steps:
 
-* Create Directories in Replica:
+1. Create Directories in Replica:
     - Iterate through the directories in the source folder using os.walk.
     - For each directory found, construct the corresponding directory path in the replica folder.
     - If the directory does not exist in the replica, create it.
     - Log the creation of directories to provide feedback.
 
-* Collect Existing Files and Directories in Replica:
+2. Collect Existing Files and Directories in Replica:
     - Traverse the ``replica folder`` using os.walk.
     - Maintain sets to store the existing directories (``existing_dirs_in_replica``) and files (``existing_files_in_replica``) in the ``replica``.
     - Populate these sets to keep track of the current state of the ``replica``.
 
-* Iterate Through Source Files and Directories:
+3. Iterate Through Source Files and Directories:
     - Again, traverse the ``source folder`` using os.walk.
     - For each source directory, construct the corresponding path in the replica.
     - Remove the directory path from ``existing_dirs_in_replica`` to mark it as encountered.
     - For each source file, construct the corresponding path in the ``replica``.
     - Check if the file exists in the ``replica``.
 
-* Copy New Files to Replica:
-    - If a file in the source does not exist in the replica, log the action and initiate an asynchronous copy using ``async_copy_file``.
-    - This step ensures that new files in the source are copied to the replica.
+    3.1. Copy New Files to Replica:
+        - If a file in the source does not exist in the replica, log the action and initiate an asynchronous copy using ``async_copy_file``.
+        - This step ensures that new files in the source are copied to the replica.
 
-* Update Modified Files in Replica:
-    - If a file exists in both the ``source`` and the ``replica``, compare their modification timestamps and sizes.
-    - If the source file is newer or has a different size, log the action and initiate an asynchronous copy to update the file in the replica.
-    - Update the source state dictionary to reflect the new state.
+    3.2. Update Modified Files in Replica:
+        - If a file exists in both the ``source`` and the ``replica``, compare their modification timestamps and sizes.
+        - If the source file is newer or has a different size, log the action and initiate an asynchronous copy to update the file in the replica.
+        - Update the source state dictionary to reflect the new state.
+    3.3. Asynchronous File Copy:
+        - The ``async_copy_file`` function is utilized to perform asynchronous file copy operations.
+        - It reads the content from the ``source file`` and writes it to the ``destination file`` in separate threads, making the process more efficient.
 
-* Remove Stale Files and Directories from Replica:
+4. Remove Stale Files and Directories from Replica:
     - Iterate through the remaining files and directories in ``existing_files_in_replica`` and ``existing_dirs_in_replica``.
     - Log the removal of each file or directory.
     - Delete the corresponding file or directory from the replica.
 
-* Asynchronous File Copy:
-    - The ``async_copy_file`` function is utilized to perform asynchronous file copy operations.
-    - It reads the content from the ``source file`` and writes it to the ``destination file`` in separate threads, making the process more efficient.
 
-* Synchronize All Operations:
+6. Synchronize All Operations:
     Use await asyncio.gather(*tasks) to synchronize all asynchronous copy operations initiated during the process.
 
 ## Usage
