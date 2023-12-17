@@ -106,11 +106,6 @@ async def async_synchronize_folders(source_path, replica_path, logging, source_s
     #6. Synchronize All Operations
     await asyncio.gather(*tasks)
 #--------------------------------------------------------------------------------
-def setup_logging(log_file_path, logging):
-    logging.basicConfig(filename=log_file_path,
-                        level=logging.INFO,
-                        format='%(asctime)s - %(levelname)s - %(message)s')
-
 async def main(args, logging):
     source_state = {}  # Dictionary to track source state
     while True:
