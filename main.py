@@ -64,22 +64,16 @@ def create_replica_folders_if_not_exist(source_path, replica_path):
             #If the directory does not exist in the replica, create it.
             create_folder_if_not_exist(dir_path_replica)
 #--------------------------------------------------------------------------------
-# Asynchronous function to synchronize folders between source and replica
-async def async_synchronize_folders(source_path, replica_path, logging, source_state):
-    #1. Create directories in replica if they don't exist
-    create_replica_folders_if_not_exist(source_path, replica_path)
-    tasks = []
-    #2. Collect existing directories and files in the replica
-    existing_dirs_in_replica, existing_files_in_replica = Collect_existing_directories(replica_path)
-    #3. Iterate through source directories and files for synchronization
-    for root, dirs, files in os.walk(source_path):
-        for dir_name in dirs:
-            dir_path_src = os.path.join(root, dir_name)
-            #For each source directory, construct the corresponding path in the replica
-            dir_path_replica = dir_path_src.replace(source_path, replica_path)
-            # Remove file from the set of existing files in the replica
-            existing_dirs_in_replica.discard(dir_path_replica)
-        for file_name in files:
+def update_existing_dirs_in_replica(root, dirs, source_path, replica_path, existing_dirs_in_replica):
+    for dir_name in dirs:
+        dir_path_src = os.path.join(root, dir_name)
+        #For each source directory, construct the corresponding path in the replica
+        dir_path_replica = dir_path_src.replace(source_path, replica_path)
+        # Remove file from the set of existing files in the replica
+        existing_dirs_in_replica.discard(dir_path_replica)
+#--------------------------------------------------------------------------------
+def update_existing_files_in_replica(root, files, source_path, replica_path, existing_files_in_replica, tasks, source_state):
+    for file_name in files:
             file_path_src = os.path.join(root, file_name)
             #For each source file, construct the corresponding path in the ``replica``
             file_path_replica = file_path_src.replace(source_path, replica_path)
@@ -91,10 +85,20 @@ async def async_synchronize_folders(source_path, replica_path, logging, source_s
             else:
                 #3.2. Check if the file needs to be updated
                 check_if_file_need_update(source_state, tasks, file_path_replica, file_path_src)
-
             # Remove file from the set of existing files in the replica
             existing_files_in_replica.discard(file_path_replica)
-
+#--------------------------------------------------------------------------------
+# Asynchronous function to synchronize folders between source and replica
+async def async_synchronize_folders(source_path, replica_path, logging, source_state):
+    #1. Create directories in replica if they don't exist
+    create_replica_folders_if_not_exist(source_path, replica_path)
+    tasks = []
+    #2. Collect existing directories and files in the replica
+    existing_dirs_in_replica, existing_files_in_replica = Collect_existing_directories(replica_path)
+    #3. Iterate through source directories and files for synchronization
+    for root, dirs, files in os.walk(source_path):
+        update_existing_dirs_in_replica(root, dirs, source_path, replica_path, existing_dirs_in_replica)
+        update_existing_files_in_replica(root, files, source_path, replica_path, existing_files_in_replica, tasks, source_state)
     #4. Remove files in replica that don't exist in the source
     remove_files(existing_files_in_replica, logging)
     #4. Remove directories in replica that don't exist in the source
