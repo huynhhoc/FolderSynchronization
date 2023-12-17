@@ -62,8 +62,8 @@ def check_if_file_need_update_md5(source_state, tasks, file_path_replica, file_p
     # Calculate MD5 hashes of source and replica files
     src_hash = calculate_md5(file_path_src)
     replica_hash = calculate_md5(file_path_replica)
-    if src_hash != replica_hash:
-        src_stat = (os.stat(file_path_src).st_mtime, os.stat(file_path_src).st_size)
+    src_stat = (os.stat(file_path_src).st_mtime, os.stat(file_path_src).st_size)
+    if source_state.get(file_path_src) != src_stat and src_hash != replica_hash:
         logging.info(f"Updating file: {file_path_replica}")
         #3.3. Asynchronous File Copy
         tasks.append(async_copy_file(file_path_src, file_path_replica))
