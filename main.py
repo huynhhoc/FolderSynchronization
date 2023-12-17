@@ -12,6 +12,31 @@ async def async_copy_file(src, dest):
         # Write content to destination file asynchronously
         await asyncio.to_thread(dest_file.write, content)
 #--------------------------------------------------------------------------------
+def Collect_existing_directories(replica_path):
+    #2. Collect existing directories and files in the replica
+    existing_files_in_replica = set()
+    existing_dirs_in_replica = set()
+    for root, dirs, files in os.walk(replica_path):
+        # Maintain sets to store the existing directories (``existing_dirs_in_replica``)
+        for dir_name in dirs:
+            dir_path_replica = os.path.join(root, dir_name)
+            existing_dirs_in_replica.add(dir_path_replica)
+        # Maintain sets to store the existing files (``existing_files_in_replica``)
+        for file_name in files:
+            file_path_replica = os.path.join(root, file_name)
+            existing_files_in_replica.add(file_path_replica)
+    return existing_dirs_in_replica, existing_files_in_replica
+#--------------------------------------------------------------------------------
+def remove_file(existing_files_in_replica, logging):
+    for file_path_replica_to_remove in existing_files_in_replica:
+        logging.info(f"Removing file: {file_path_replica_to_remove}")
+        os.remove(file_path_replica_to_remove)
+#--------------------------------------------------------------------------------
+def remove_dir(existing_dirs_in_replica):
+    for dir_path_replica_to_remove in existing_dirs_in_replica:
+        logging.info(f"Removing directory: {dir_path_replica_to_remove}")
+        shutil.rmtree(dir_path_replica_to_remove)
+#--------------------------------------------------------------------------------
 # Asynchronous function to synchronize folders between source and replica
 async def async_synchronize_folders(source_path, replica_path, logging, source_state):
     #1. Create directories in replica if they don't exist
@@ -27,20 +52,8 @@ async def async_synchronize_folders(source_path, replica_path, logging, source_s
                 os.makedirs(dir_path_replica, exist_ok=True)
 
     tasks = []
-    existing_files_in_replica = set()
-    existing_dirs_in_replica = set()
-
     #2. Collect existing directories and files in the replica
-    for root, dirs, files in os.walk(replica_path):
-        # Maintain sets to store the existing directories (``existing_dirs_in_replica``)
-        for dir_name in dirs:
-            dir_path_replica = os.path.join(root, dir_name)
-            existing_dirs_in_replica.add(dir_path_replica)
-        # Maintain sets to store the existing files (``existing_files_in_replica``)
-        for file_name in files:
-            file_path_replica = os.path.join(root, file_name)
-            existing_files_in_replica.add(file_path_replica)
-    
+    existing_dirs_in_replica, existing_files_in_replica = Collect_existing_directories(replica_path)
     #3. Iterate through source directories and files for synchronization
     for root, dirs, files in os.walk(source_path):
         for dir_name in dirs:
@@ -75,14 +88,9 @@ async def async_synchronize_folders(source_path, replica_path, logging, source_s
             existing_files_in_replica.discard(file_path_replica)
 
     #4. Remove files in replica that don't exist in the source
-    for file_path_replica_to_remove in existing_files_in_replica:
-        logging.info(f"Removing file: {file_path_replica_to_remove}")
-        os.remove(file_path_replica_to_remove)
-
+    remove_file(existing_files_in_replica, logging)
     #4. Remove directories in replica that don't exist in the source
-    for dir_path_replica_to_remove in existing_dirs_in_replica:
-        logging.info(f"Removing directory: {dir_path_replica_to_remove}")
-        shutil.rmtree(dir_path_replica_to_remove)
+    remove_dir(existing_dirs_in_replica)
     #6. Synchronize All Operations
     await asyncio.gather(*tasks)
 #--------------------------------------------------------------------------------

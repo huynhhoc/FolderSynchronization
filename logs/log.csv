@@ -106,3 +106,54 @@
 12-16-2023 12:05:38 | INFO | Removing directory: ./replica\test
 12-16-2023 12:05:38 | INFO | Synchronization completed successfully.
 12-16-2023 12:05:38 | INFO | Synchronization process sleep in around 30 seconds.
+12-17-2023 10:26:21 | INFO | Updating file: ./replica\descriptions\task.txt
+12-17-2023 10:26:22 | INFO | Synchronization completed successfully.
+12-17-2023 10:26:22 | INFO | Synchronization process sleep in around 30 seconds.
+12-17-2023 10:26:52 | INFO | Creating directory: ./replica\hoc
+12-17-2023 10:26:52 | INFO | Copying new file: ./replica\hoc\test.csv
+12-17-2023 10:26:52 | INFO | Synchronization completed successfully.
+12-17-2023 10:26:52 | INFO | Synchronization process sleep in around 30 seconds.
+12-17-2023 10:27:22 | INFO | Updating file: ./replica\hoc\test.csv
+12-17-2023 10:27:22 | INFO | Synchronization completed successfully.
+12-17-2023 10:27:22 | INFO | Synchronization process sleep in around 30 seconds.
+12-17-2023 10:27:52 | INFO | Removing file: ./replica\hoc\test.csv
+12-17-2023 10:27:52 | INFO | Removing directory: ./replica\hoc
+12-17-2023 10:27:52 | INFO | Synchronization completed successfully.
+12-17-2023 10:27:52 | INFO | Synchronization process sleep in around 30 seconds.
+12-17-2023 10:28:22 | INFO | Synchronization completed successfully.
+12-17-2023 10:28:22 | INFO | Synchronization process sleep in around 30 seconds.
+12-17-2023 10:28:52 | INFO | Creating directory: ./replica\hoc
+12-17-2023 10:28:52 | INFO | Copying new file: ./replica\hoc\test2.csv
+12-17-2023 10:28:52 | INFO | Synchronization completed successfully.
+12-17-2023 10:28:52 | INFO | Synchronization process sleep in around 30 seconds.
+12-17-2023 10:29:22 | INFO | Updating file: ./replica\hoc\test2.csv
+12-17-2023 10:29:22 | INFO | Synchronization completed successfully.
+12-17-2023 10:29:22 | INFO | Synchronization process sleep in around 30 seconds.
+12-17-2023 10:29:52 | INFO | Updating file: ./replica\hoc\test2.csv
+12-17-2023 10:29:52 | INFO | Synchronization completed successfully.
+12-17-2023 10:29:52 | INFO | Synchronization process sleep in around 30 seconds.
+12-17-2023 10:30:22 | INFO | Synchronization completed successfully.
+12-17-2023 10:30:22 | INFO | Synchronization process sleep in around 30 seconds.
+12-17-2023 10:30:52 | INFO | Synchronization completed successfully.
+12-17-2023 10:30:52 | INFO | Synchronization process sleep in around 30 seconds.
+12-17-2023 10:31:22 | INFO | Synchronization completed successfully.
+12-17-2023 10:31:22 | INFO | Synchronization process sleep in around 30 seconds.
+12-17-2023 10:33:54 | INFO | Updating file: ./replica\descriptions\task.txt
+12-17-2023 10:33:54 | INFO | Updating file: ./replica\hoc\test2.csv
+12-17-2023 10:33:54 | INFO | Synchronization completed successfully.
+12-17-2023 10:33:54 | INFO | Synchronization process sleep in around 30 seconds.
+12-17-2023 10:34:24 | INFO | Creating directory: ./replica\hoc copy
+12-17-2023 10:34:24 | INFO | Copying new file: ./replica\hoc copy\test2.csv
+12-17-2023 10:34:24 | INFO | Synchronization completed successfully.
+12-17-2023 10:34:24 | INFO | Synchronization process sleep in around 30 seconds.
+12-17-2023 10:34:54 | INFO | Updating file: ./replica\hoc copy\test2.csv
+12-17-2023 10:34:54 | INFO | Synchronization completed successfully.
+12-17-2023 10:34:54 | INFO | Synchronization process sleep in around 30 seconds.
+12-17-2023 10:35:24 | INFO | Removing file: ./replica\hoc copy\test2.csv
+12-17-2023 10:35:24 | INFO | Removing directory: ./replica\hoc copy
+12-17-2023 10:35:24 | INFO | Synchronization completed successfully.
+12-17-2023 10:35:24 | INFO | Synchronization process sleep in around 30 seconds.
+12-17-2023 10:35:54 | INFO | Removing file: ./replica\hoc\test2.csv
+12-17-2023 10:35:54 | INFO | Removing directory: ./replica\hoc
+12-17-2023 10:35:54 | INFO | Synchronization completed successfully.
+12-17-2023 10:35:54 | INFO | Synchronization process sleep in around 30 seconds.
