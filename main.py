@@ -3,6 +3,15 @@ from utils.utils import *
 import os
 import asyncio
 import shutil
+import hashlib
+#--------------------------------------------------------------------------------
+def calculate_md5(file_path):
+    md5_hash = hashlib.md5()
+    with open(file_path, "rb") as file:
+        # Read and update hash string value in blocks of 4K
+        for byte_block in iter(lambda: file.read(4096), b""):
+            md5_hash.update(byte_block)
+    return md5_hash.hexdigest()
 #--------------------------------------------------------------------------------
 # Asynchronous function to copy a file from source to destination
 async def async_copy_file(src, dest):
@@ -48,6 +57,19 @@ def check_if_file_need_update(source_state, tasks, file_path_replica, file_path_
         # Update source state after confirming the file exists in the replica
         source_state[file_path_src] = src_stat
 #--------------------------------------------------------------------------------
+def check_if_file_need_update_md5(source_state, tasks, file_path_replica, file_path_src):
+    #3.2. Check if the file needs to be updated
+    # Calculate MD5 hashes of source and replica files
+    src_hash = calculate_md5(file_path_src)
+    replica_hash = calculate_md5(file_path_replica)
+    if src_hash != replica_hash:
+        src_stat = (os.stat(file_path_src).st_mtime, os.stat(file_path_src).st_size)
+        logging.info(f"Updating file: {file_path_replica}")
+        #3.3. Asynchronous File Copy
+        tasks.append(async_copy_file(file_path_src, file_path_replica))
+        # Update source state after confirming the file exists in the replica
+        source_state[file_path_src] = src_stat
+#--------------------------------------------------------------------------------
 def create_folder_if_not_exist(dir_path_replica):
     #If the directory does not exist in the replica, create it.
     if not os.path.exists(dir_path_replica):
@@ -84,7 +106,8 @@ def update_existing_files_in_replica(root, files, source_path, replica_path, exi
                 tasks.append(async_copy_file(file_path_src, file_path_replica))
             else:
                 #3.2. Check if the file needs to be updated
-                check_if_file_need_update(source_state, tasks, file_path_replica, file_path_src)
+                #check_if_file_need_update(source_state, tasks, file_path_replica, file_path_src)
+                check_if_file_need_update_md5(source_state, tasks, file_path_replica, file_path_src)
             # Remove file from the set of existing files in the replica
             existing_files_in_replica.discard(file_path_replica)
 #--------------------------------------------------------------------------------
