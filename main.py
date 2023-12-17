@@ -54,20 +54,20 @@ def create_folder_if_not_exist(dir_path_replica):
         logging.info(f"Creating directory: {dir_path_replica}")
         os.makedirs(dir_path_replica, exist_ok=True)
 #--------------------------------------------------------------------------------
-def create_replica_folders_if_not_exist(root,dirs, source_path, replica_path):
-    for dir_name in dirs:
-        dir_path_src = os.path.join(root, dir_name)
-        #For each directory found, construct the corresponding directory path in the replica folder
-        dir_path_replica = dir_path_src.replace(source_path, replica_path)
-        #If the directory does not exist in the replica, create it.
-        create_folder_if_not_exist(dir_path_replica)
+def create_replica_folders_if_not_exist(source_path, replica_path):
+    for root, dirs, _ in os.walk(source_path):
+        #Iterate through the directories in the source folder
+        for dir_name in dirs:
+            dir_path_src = os.path.join(root, dir_name)
+            #For each directory found, construct the corresponding directory path in the replica folder
+            dir_path_replica = dir_path_src.replace(source_path, replica_path)
+            #If the directory does not exist in the replica, create it.
+            create_folder_if_not_exist(dir_path_replica)
 #--------------------------------------------------------------------------------
 # Asynchronous function to synchronize folders between source and replica
 async def async_synchronize_folders(source_path, replica_path, logging, source_state):
     #1. Create directories in replica if they don't exist
-    for root, dirs, _ in os.walk(source_path):
-        #Iterate through the directories in the source folder
-        create_replica_folders_if_not_exist(root,dirs, source_path, replica_path)
+    create_replica_folders_if_not_exist(source_path, replica_path)
     tasks = []
     #2. Collect existing directories and files in the replica
     existing_dirs_in_replica, existing_files_in_replica = Collect_existing_directories(replica_path)
